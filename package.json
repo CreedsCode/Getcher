@@ -9,6 +9,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.13",
+    "@heroicons/react": "^2.0.16",
     "formik": "^2.2.9",
     "next": "^13.2.1",
     "papaparse": "^5.4.0",
@@ -19,6 +21,7 @@
   "devDependencies": {
     "@types/eslint": "^8.21.1",
     "@types/node": "^18.14.0",
+    "@types/papaparse": "^5.3.7",
     "@types/prettier": "^2.7.2",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
