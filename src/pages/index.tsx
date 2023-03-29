@@ -76,16 +76,16 @@ const Home: NextPage = () => {
         const fields = row.meta.fields;
         const rowData = row.data as string[];
         if (!headers && i == 2) {
-          if (Array.isArray(row.meta.fields) && Array.isArray(row.data)) {
-            newHeaders = Object.keys(row.meta.fields).map((key, index) => ({
-              id: index + 1,
-              // @ts-ignore:next-line
-              name: fields[key] as string,
-              // @ts-ignore:next-line
-              preview: rowData[fields[key] as string] as string,
-              unavailable: false,
-            }));
-          }
+          // @ts-ignore:next-line
+          newHeaders = Object.keys(row.meta.fields).map((key, index) => ({
+            id: index + 1,
+            // @ts-ignore:next-line
+            name: fields[key] as string,
+            // @ts-ignore:next-line
+            preview: rowData[fields[key] as string] as string,
+            unavailable: false,
+          }));
+          console.log("hereAASDASd", newHeaders);
         }
         if (headerSelected && i >= 2) {
           if (uploadState != "Processing") {
