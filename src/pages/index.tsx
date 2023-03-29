@@ -57,42 +57,60 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (!file) return;
     let i = 0;
-    let newHeaders = null;
-    let data = [];
+    let newHeaders:
+      | ((
+          prevState: HeaderSelectionItem[] | null
+        ) => HeaderSelectionItem[] | null)
+      | {
+          id: number;
+          name: any;
+          preview: any; // or maybe [key],
+          unavailable: boolean;
+        }[]
+      | null = null;
+    const data: Promise<any>[] = [];
     Papa.parse(file, {
       worker: true,
       header: true,
       step: function (row) {
+        const fields = row.meta.fields;
+        const rowData = row.data as string[];
         if (!headers && i == 2) {
-          newHeaders = Object.keys(row.meta.fields).map((key, index) => ({
-            id: index + 1,
-            name: row.meta.fields[key],
-            preview: row.data[row.meta.fields[key]], // or maybe [key],
-            unavailable: false,
-          }));
+          if (Array.isArray(row.meta.fields) && Array.isArray(row.data)) {
+            newHeaders = Object.keys(row.meta.fields).map((key, index) => ({
+              id: index + 1,
+              // @ts-ignore:next-line
+              name: fields[key] as string,
+              // @ts-ignore:next-line
+              preview: rowData[fields[key] as string] as string,
+              unavailable: false,
+            }));
+          }
         }
         if (headerSelected && i >= 2) {
           if (uploadState != "Processing") {
             setUploadState(UploadState.processing);
             console.log("Lets process");
           }
-          console.log("now: ", row.data[selectedColumn]);
+
+          // @ts-ignore:next-line
+          console.log("now: ", rowData[selectedColumn]);
 
           fetch("https://api.gls-group.eu/public/v1/tracking/references/", {
             method: "GET",
             headers: {
-              Authorization: `Basic ${localStorage.getItem("secret")}`,
+              Authorization: `Basic ${localStorage.getItem("secret")!}`,
             },
           })
             .then((response) => {
               data.push(response.json());
               setProccessingCount(proccessingCount + 1);
             })
-            .catch((err) => {
-              if (err.status === 401) {
-                // errors = { username: "Wrong Creds" };
-                console.log("Fuck mate");
-              }
+            .catch(() => {
+              // if (err.status === 401) {
+              //   // errors = { username: "Wrong Creds" };
+              // }
+              console.log("Fuck mate");
             });
         }
         console.log(row.data, i, "log");
@@ -251,7 +269,7 @@ const Home: NextPage = () => {
                             {/* <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"> */}
                             <Listbox.Button className="relative w-full cursor-default rounded bg-white/10 p-1 py-2 pl-3 pr-10 text-white">
                               <span className="block text-lg">
-                                {selectedColumn}
+                                <>{selectedColumn}</>
                               </span>
                               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                                 <ChevronUpDownIcon
@@ -280,6 +298,7 @@ const Home: NextPage = () => {
                                       }`
                                     }
                                   >
+                                    {/* @ts-ignore:next-line */}
                                     {({ selectedColumn }) => (
                                       <>
                                         <span
