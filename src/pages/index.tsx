@@ -72,8 +72,11 @@ const Home: NextPage = () => {
           }));
         }
         if (headerSelected && i >= 2) {
-          console.log("here is now loads", row.data[selectedColumn]);
-          setUploadState(UploadState.processing);
+          if (uploadState != "Processing") {
+            setUploadState(UploadState.processing);
+            console.log("Lets process");
+          }
+          console.log("now: ", row.data[selectedColumn]);
 
           fetch("https://api.gls-group.eu/public/v1/tracking/references/", {
             method: "GET",
