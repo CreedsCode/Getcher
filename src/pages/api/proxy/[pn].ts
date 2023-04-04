@@ -26,12 +26,11 @@ export default function handler(
 
           return res.status(200).json({ glsStatus: desc });
         })
-        .catch(() => {
-          // if (err.status === 401) {
-          //   // errors = { username: "Wrong Creds" };
-          // }
-          console.log("Fuck mate");
+        .catch((e) => {
+          console.log("Fuck mate", e);
         });
     }
+  } else {
+    return res.status(404);
   }
 }

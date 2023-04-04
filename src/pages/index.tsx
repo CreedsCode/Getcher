@@ -6,6 +6,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useEffect, useState, Fragment } from "react";
 import Papa from "papaparse";
+import { log } from "console";
 
 interface HeaderSelectionItem {
   id: number;
@@ -56,7 +57,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (!file) return;
-    let i = 0;
+    let i = 1;
     let newHeaders:
       | ((
           prevState: HeaderSelectionItem[] | null
@@ -99,19 +100,20 @@ const Home: NextPage = () => {
           // @ts-ignore:next-line
           let fetch_id = rowData[selectedColumn] as string;
           fetch_id = fetch_id.slice(0, 11);
-
-          fetch(`/api/proxy/${fetch_id}`, {
-            method: "GET",
-          })
-            .then((response) => {
-              const idk = response.json();
-              data.push(idk);
-              setProccessingCount(proccessingCount + 1);
-              console.log("fetched", fetch_id, idk);
+          if (fetch_id !== "") {
+            fetch(`/api/proxy/${fetch_id}`, {
+              method: "GET",
             })
-            .catch(() => {
-              console.log("pls fix, todo shaming");
-            });
+              .then(async (response) => {
+                const idk = await response.json();
+                data.push(idk);
+                setProccessingCount(proccessingCount + 1);
+                console.log("fetched", fetch_id, idk);
+              })
+              .catch(() => {
+                console.log("pls fix, todo shaming");
+              });
+          }
         }
         console.log(row.data, i, "log");
 
@@ -119,7 +121,6 @@ const Home: NextPage = () => {
       },
       complete: function () {
         console.log("done!");
-
         setHeaders(newHeaders);
         console.log(data, "done");
       },
