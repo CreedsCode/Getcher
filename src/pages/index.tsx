@@ -96,21 +96,21 @@ const Home: NextPage = () => {
           // @ts-ignore:next-line
           console.log("now: ", rowData[selectedColumn]);
 
-          fetch("https://api.gls-group.eu/public/v1/tracking/references/", {
+          // @ts-ignore:next-line
+          let fetch_id = rowData[selectedColumn] as string;
+          fetch_id = fetch_id.slice(0, 11);
+
+          fetch(`/api/proxy/${fetch_id}`, {
             method: "GET",
-            headers: {
-              Authorization: `Basic ${localStorage.getItem("secret")!}`,
-            },
           })
             .then((response) => {
-              data.push(response.json());
+              const idk = response.json();
+              data.push(idk);
               setProccessingCount(proccessingCount + 1);
+              console.log("fetched", fetch_id, idk);
             })
             .catch(() => {
-              // if (err.status === 401) {
-              //   // errors = { username: "Wrong Creds" };
-              // }
-              console.log("Fuck mate");
+              console.log("pls fix, todo shaming");
             });
         }
         console.log(row.data, i, "log");
@@ -174,60 +174,6 @@ const Home: NextPage = () => {
             G<span className="text-[hsl(280,100%,70%)]">etcher</span>
           </h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
-              <h3 className="text-2xl font-bold">Setup</h3>
-              <div className="text-lg">
-                <Formik
-                  initialValues={{
-                    username: "",
-                    password: "",
-                  }}
-                  onSubmit={handleSubmit}
-                >
-                  <Form>
-                    <label className="text-lg" htmlFor="username">
-                      Username
-                    </label>
-                    <Field
-                      className="w-full rounded bg-white/10 p-1 text-white"
-                      id="username"
-                      name="username"
-                    />
-
-                    <label className="text-lg" htmlFor="password">
-                      Password
-                    </label>
-                    <Field
-                      className="w-full rounded bg-white/10 p-1 text-white"
-                      id="password"
-                      name="password"
-                      type="password"
-                    />
-                    <button
-                      className="dark:focus my-1 w-full rounded-lg bg-white/10  px-5 py-2.5 text-center text-sm  text-white  dark:bg-[hsl(280,100%,70%)]  sm:w-auto"
-                      type="submit"
-                    >
-                      Update
-                    </button>
-                    {/* {localStorage.getItem("secret") ? (
-                      <button
-                        className="dark:focus my-1 w-full rounded-lg bg-white/10  px-5 py-2.5 text-center text-sm  text-white  dark:bg-[hsl(280,100%,70%)]  sm:w-auto"
-                        type="submit"
-                      >
-                        Update
-                      </button>
-                    ) : (
-                      <button
-                        className="dark:focus my-1 w-full rounded-lg bg-white/10  px-5 py-2.5 text-center text-sm  text-white  dark:bg-[hsl(280,100%,70%)]  sm:w-auto"
-                        type="submit"
-                      >
-                        Save
-                      </button>
-                    )} */}
-                  </Form>
-                </Formik>
-              </div>
-            </div>
             <div>
               <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
                 <div>
@@ -343,6 +289,60 @@ const Home: NextPage = () => {
                 }
               </div>
             </div>
+            {/* <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
+              <h3 className="text-2xl font-bold">Setup</h3>
+              <div className="text-lg">
+                <Formik
+                  initialValues={{
+                    username: "",
+                    password: "",
+                  }}
+                  onSubmit={handleSubmit}
+                >
+                  <Form>
+                    <label className="text-lg" htmlFor="username">
+                      Username
+                    </label>
+                    <Field
+                      className="w-full rounded bg-white/10 p-1 text-white"
+                      id="username"
+                      name="username"
+                    />
+
+                    <label className="text-lg" htmlFor="password">
+                      Password
+                    </label>
+                    <Field
+                      className="w-full rounded bg-white/10 p-1 text-white"
+                      id="password"
+                      name="password"
+                      type="password"
+                    />
+                    <button
+                      className="dark:focus my-1 w-full rounded-lg bg-white/10  px-5 py-2.5 text-center text-sm  text-white  dark:bg-[hsl(280,100%,70%)]  sm:w-auto"
+                      type="submit"
+                    >
+                      Update
+                    </button>
+                    {localStorage.getItem("secret") ? (
+                      <button
+                        className="dark:focus my-1 w-full rounded-lg bg-white/10  px-5 py-2.5 text-center text-sm  text-white  dark:bg-[hsl(280,100%,70%)]  sm:w-auto"
+                        type="submit"
+                      >
+                        Update
+                      </button>
+                    ) : (
+                      <button
+                        className="dark:focus my-1 w-full rounded-lg bg-white/10  px-5 py-2.5 text-center text-sm  text-white  dark:bg-[hsl(280,100%,70%)]  sm:w-auto"
+                        type="submit"
+                      >
+                        Save
+                      </button>
+                    )}
+                  </Form>
+                </Formik>
+              </div>
+            </div> */}
           </div>
         </div>
       </main>
